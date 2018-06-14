@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>发布微博</title>
+</head>
+<body>
+<form action="" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="author">
+    <br>
+    <input type="text" name="msg">
+    <br>
+    <input type="submit" value="提交">
+</form>
+</body>
+</html>
