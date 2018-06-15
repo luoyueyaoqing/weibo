@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from .views import index
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^weibo/', include('yezi_weibo.urls', namespace='wb')),
     url(r'^accounts/', include('account.urls', namespace='account')),
+    url(r'^$', index, name='index')
 ]

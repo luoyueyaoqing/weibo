@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse, redirect
+from django.shortcuts import render, HttpResponse, redirect, HttpResponseRedirect
 from django.contrib.auth.models import User
 from yezi_weibo.models import WBUser
 from django.contrib.auth import authenticate, login, logout
@@ -26,7 +26,7 @@ def log_in(request):
         user = authenticate(username=username, password=password)
         if user:
             login(request, user)
-            return HttpResponse('okkkkkkkkkkkk')
+            return HttpResponseRedirect('/')
         else:
             return HttpResponse('密码错误或用户名不存在')
     return render(request, 'account/login.html')
@@ -34,4 +34,4 @@ def log_in(request):
 
 def log_out(request):
     logout(request)
-    # return HttpResponse('/')
+    return HttpResponseRedirect('/')

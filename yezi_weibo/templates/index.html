@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>微博首页</title>
+</head>
+<body>
+{% if user.is_authenticated %}
+    <span><a href='{% url "account:logout" %}'>退出登录</a></span>
+    <span><a href='{% url "wb:homepage" %}'>个人中心</a></span>
+    <span><a href='{% url "wb:user_page" %}?uid={{ user.id }}'>我的主页</a></span>
+{% else %}
+    <span><a href='{% url "account:register" %}'>注册</a></span>
+    <span><a href='{% url "account:login" %}'>登录</a></span>
+{% endif %}
+<hr>
+<table>
+<tr>
+    <th>昵称</th>
+    <th>性别</th>
+    <th>加入时间</th>
+</tr>
+{% for wb_user in users %}
+<tr>
+    <td><a href='{% url "wb:user_page" %}?uid={{ wb_user.id }}'>{{ wb_user }}</a></td>
+<!--choices字段显示的值可以通过get_YOURFIELD_display方法来访问-->
+    <td>{{ wb_user.get_gender_display }}</td>
+    <td>{{ wb_user.date_joined }}</td>
+</tr>
+</table>
+<hr>
+{% endfor %}
+
+</body>
+</html>
