@@ -7,9 +7,9 @@
 <body>
 <form action="" method="post">
     {% csrf_token %}
-    <input type="hidden" name="author">
+    <input type="hidden" name="author", value="{{ wb_user }}">
     <br>
-    <input type="text" name="msg">
+    <textarea name="msg" placeholder="请输入微博内容,少于500字"></textarea>
     <br>
     <input type="submit" value="提交">
 </form>

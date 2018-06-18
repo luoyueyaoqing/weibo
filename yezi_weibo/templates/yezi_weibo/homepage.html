@@ -6,5 +6,9 @@
 </head>
 <body>
 <h2>欢迎回来 {{ wb_user }}</h2>
+<br>
+<a href="{% url 'wb:update' %}">写博客</a>
+<br>
+<span><a href='{% url "wb:user_page" %}?uid={{ user.id }}'>我的主页</a></span>
 </body>
 </html>
