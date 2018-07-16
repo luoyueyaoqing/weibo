@@ -55,6 +55,13 @@ class WeiBo(models.Model):
         self.is_del = True
         self.save()
 
+    def comment_this(self, user: WBUser, text: str):
+        """
+        评论微博
+        """
+        comment = Comment.objects.create(target=self, user=user, text=text)
+        return comment
+
     def __str__(self):
         return self.text.msg
 
@@ -64,8 +71,8 @@ class Comment(models.Model):
     user, target>text, is_del, time_create,
     '''
     user = models.ForeignKey(WBUser, verbose_name='用户', related_name='comments')
-    target = models.ForeignKey(WBText, verbose_name='被评信息', related_name='comments')
-    text = models.OneToOneField(WBText, verbose_name="评论")
+    target = models.ForeignKey(WeiBo, verbose_name='被评微博', related_name='comments')
+    text = models.TextField(max_length=500, verbose_name="评论")
     is_del = models.BooleanField(verbose_name='是否删除', default=False)
     time_create = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
 
@@ -76,3 +83,6 @@ class Comment(models.Model):
     def del_this(self):
         self.is_del = True
         self.save()
+
+    def __str__(self):
+        return '{msg}'.format(msg=self.text[:20])

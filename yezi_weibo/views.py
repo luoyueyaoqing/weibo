@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse,get_object_or_404, redirect, HttpResponseRedirect
-from .models import WBText, WBUser, WeiBo
+from .models import WBText, WBUser, WeiBo, Comment
 from django.contrib.auth.decorators import login_required
 
 
@@ -23,10 +23,20 @@ def user_page(request):
 
 def wb_update(request):
     wb_user = get_object_or_404(WBUser, id=request.user.id)
-    print('===========', wb_user)
     if request.method == "POST":
         msg = request.POST.get('msg')
         wbt = WBText.objects.create(author=wb_user, msg=msg)
         wb = WeiBo.objects.create(user=wb_user, text=wbt)
         return HttpResponseRedirect('/')
     return render(request, 'yezi_weibo/update.html', {'wb_user': wb_user})
+
+
+def wb_comment(request):
+    request.session['login_from'] = request.META.get('HTTP_REFERER', '/')
+    wid = request.POST.get('wid')
+    wb = get_object_or_404(WeiBo, id=wid)
+    wb_user = get_object_or_404(WBUser, id=request.user.id)
+    msg = request.POST.get('msg')
+    comment = wb.comment_this(user=wb_user, text=msg)
+    return HttpResponseRedirect(request.session['login_from'])
+

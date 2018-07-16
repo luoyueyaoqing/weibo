@@ -14,6 +14,18 @@
 <p>作者: {{ wb.text.author }}</p>
 <p>内容: {{ wb.text.msg }}</p>
 <p>发布时间: {{ wb.time_create }}</p>
+<br>
+<form method="post" action="{% url 'wb:wb_comment' %}">
+    {% csrf_token %}
+    <input type="text" name="msg" placeholder="写评论">
+    <input type="hidden" name="wid" value="{{ wb.id }}">
+    <input type="submit" value="提交">
+</form>
+<!--<span><a href='{% url "wb:wb_comment" %}'>写评论</a></span>-->
+<hr>
+{% for comm in wb.comments.all %}
+<p>{{ comm.user}}@@{{ comm.text }}</p>
+{% endfor %}
 <hr>
 {% endfor %}
 </body>
