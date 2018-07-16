@@ -8,24 +8,33 @@
 <h2><i>{{ wb_user }}</i> 的主页</h2>
 <p>个性签名...</p>
 <p><a href="#">修改资料</a></p>
+{% if wb_user in user.followers.all %}
+    <a href="#">已关注</a>
+{% elif wb_user.id == user.id %}
+    <div style="display:none"></div>
+{% else %}
+    <a href="{% url 'wb:user_follow' %}?uid={{ wb_user.id }}">关注</a>
+{% endif %}
 
 <hr>
 {% for wb in wbs %}
-<p>作者: {{ wb.text.author }}</p>
-<p>内容: {{ wb.text.msg }}</p>
-<p>发布时间: {{ wb.time_create }}</p>
-<br>
-<form method="post" action="{% url 'wb:wb_comment' %}">
-    {% csrf_token %}
-    <input type="text" name="msg" placeholder="写评论">
-    <input type="hidden" name="wid" value="{{ wb.id }}">
-    <input type="submit" value="提交">
-</form>
-<!--<span><a href='{% url "wb:wb_comment" %}'>写评论</a></span>-->
+    {% if not wb.is_del %}
+        <p>作者: {{ wb.text.author }}</p>
+        <p>发布时间: {{ wb.time_create }}</p>
+        <p>内容: {{ wb.text.msg }}</p>
+        <p><a href="{% url 'wb:wb_delete' %}?wid={{ wb.id }}">删除微博</a></p>
+        <br>
+        <form method="post" action="{% url 'wb:wb_comment' %}">
+            {% csrf_token %}
+            <input type="text" name="msg" placeholder="写评论">
+            <input type="hidden" name="wid" value="{{ wb.id }}">
+            <input type="submit" value="提交">
+        </form>
 <hr>
-{% for comm in wb.comments.all %}
-<p>{{ comm.user}}@@{{ comm.text }}</p>
-{% endfor %}
+        {% for comm in wb.comments.all %}
+            <p>{{ comm.user}}@@{{ comm.text }}</p>
+        {% endfor %}
+    {% endif %}
 <hr>
 {% endfor %}
 </body>

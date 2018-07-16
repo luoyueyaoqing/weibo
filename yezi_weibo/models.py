@@ -12,6 +12,7 @@ class WBUser(User):
     nickname = models.CharField(verbose_name='昵称', max_length=128, null=True, blank=True)
     gender = models.IntegerField(verbose_name='性别', choices=GENDER_OPTIONS, default=0)
     _info = models.TextField(verbose_name='其他信息', null=True, blank=True)
+    followers = models.ManyToManyField('WBUser', verbose_name='关注')
 
     class Meta:
         verbose_name = '微博用户'
@@ -23,6 +24,10 @@ class WBUser(User):
 
     def save_user_info(self, info: dict):
         self._info = json.dumps(info)
+        self.save()
+
+    def follow(self, user: 'WBUser'):
+        self.followers.add(user)
         self.save()
 
     def __str__(self):
@@ -56,9 +61,6 @@ class WeiBo(models.Model):
         self.save()
 
     def comment_this(self, user: WBUser, text: str):
-        """
-        评论微博
-        """
         comment = Comment.objects.create(target=self, user=user, text=text)
         return comment
 
@@ -67,9 +69,6 @@ class WeiBo(models.Model):
 
 
 class Comment(models.Model):
-    '''
-    user, target>text, is_del, time_create,
-    '''
     user = models.ForeignKey(WBUser, verbose_name='用户', related_name='comments')
     target = models.ForeignKey(WeiBo, verbose_name='被评微博', related_name='comments')
     text = models.TextField(max_length=500, verbose_name="评论")
