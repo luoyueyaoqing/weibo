@@ -31,7 +31,9 @@ def wb_update(request):
         msg = request.POST.get('msg')
         wbt = WBText.objects.create(author=wb_user, msg=msg)
         wb = WeiBo.objects.create(user=wb_user, text=wbt)
-        return HttpResponseRedirect('/')
+        response = redirect('wb:user_page')
+        response['Location'] += '?uid={uid}'.format(uid=wb_user.id)
+        return response
     return render(request, 'yezi_weibo/update.html', {'wb_user': wb_user})
 
 
@@ -75,3 +77,20 @@ def user_unfollow(request):
     wb_user = get_object_or_404(WBUser, id=uid)
     user.unfollow(wb_user)
     return HttpResponse()
+
+
+def wb_forward(request):
+    # 转发微博
+    if request.method == "POST":
+        wid = request.GET.get('wid')
+        wb = get_object_or_404(WeiBo, id=wid)
+        wb_user = get_object_or_404(WBUser, id=request.user.id)
+        # WeiBo.objects.create(user=wb_user, text=wb.text)
+        new_wb = wb_user.forward(wb)
+        msg = request.POST.get('msg')
+        if msg is not None:
+            new_wb.comment_this(user=wb_user, text=msg)
+            response = redirect('wb:user_page')
+            response['Location'] += '?uid={uid}'.format(uid=wb_user.id)
+            return response
+    return render(request, 'yezi_weibo/forward.html')

@@ -32,6 +32,9 @@ class WBUser(User):
     def unfollow(self, user: 'WBUser'):
         self.followers.remove(user)
 
+    def forward(self, wb:'WeiBo'):
+        return WeiBo.objects.create(user=self, text=wb.text)
+
     def __str__(self):
         return self.nickname or self.username
 
