@@ -9,5 +9,6 @@ urlpatterns = [
     url(r'user_page/$', views.user_page, name='user_page'),
     url(r'wb_comment/$', views.wb_comment, name='wb_comment'),
     url(r'user_follow/$', views.user_follow, name='user_follow'),
+    url(r'user_unfollow/$', views.user_unfollow, name='user_unfollow'),
 
 ]

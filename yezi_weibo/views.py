@@ -66,3 +66,12 @@ def user_follow(request):
     wb_user = get_object_or_404(WBUser, id=uid)
     user.follow(wb_user)
     return HttpResponse()
+
+
+def user_unfollow(request):
+    # 取消关注
+    user = get_object_or_404(WBUser, id=request.user.id)
+    uid = request.GET.get('uid')
+    wb_user = get_object_or_404(WBUser, id=uid)
+    user.unfollow(wb_user)
+    return HttpResponse()

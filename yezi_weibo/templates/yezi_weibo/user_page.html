@@ -9,11 +9,12 @@
 <p>个性签名...</p>
 <p><a href="#">修改资料</a></p>
 {% if wb_user in user.followers.all %}
-    <a href="#">已关注</a>
+    <a href="#" onclick="unfollow_this(this)">已关注</a>
 {% elif wb_user.id == user.id %}
     <div style="display:none"></div>
 {% else %}
-    <a href="{% url 'wb:user_follow' %}?uid={{ wb_user.id }}">关注</a>
+    <!--<a href="{% url 'wb:user_follow' %}?uid={{ wb_user.id }}">关注</a>-->
+		<a href="#" onclick='follow_this(this)'>关注</a>
 {% endif %}
 
 <hr>
@@ -37,5 +38,34 @@
     {% endif %}
 <hr>
 {% endfor %}
+
+
+<script>
+function follow_this(e){
+    // 关注用户
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '{% url "wb:user_follow" %}?uid={{ wb_user.id }}', true);
+    xhr.onreadystatechange=function(){
+        if(xhr.readyState == 4 && xhr.status == 200){
+            e.setAttribute('onclick', 'unfollow_this(this)');
+            e.innerText = '已关注';
+        };
+    };
+    xhr.send();
+};
+
+function unfollow_this(e){
+    // 取消用户
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', '{% url "wb:user_unfollow" %}?uid={{ wb_user.id }}', true);
+    xhr.onreadystatechange=function(){
+        if(xhr.readyState == 4 && xhr.status == 200){
+            e.setAttribute('onclick', 'follow_this(this)');
+            e.innerText = '关注';
+        };
+    };
+    xhr.send();
+};
+</script>
 </body>
 </html>
